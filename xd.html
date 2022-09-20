@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <title>Start</title>
+    <link href='https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;700&family=Inconsolata:wght@300;500;700&display=swap"
+        rel="stylesheet">
+    <!-- font-family: 'Dancing Script', cursive; -family: 'Inconsolata', monospace; -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <style>
+        body {
+            padding-top: 50px;
+            background: url(https://images.pexels.com/photos/2387793/pexels-photo-2387793.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1);
+            background-repeat: no-repeat;
+            background-size: cover;
+            color: #ffffffa7;
+        }
+
+        .form-select-sm {
+            width: 70px;
+        }
+
+        #output,
+        .form-select {
+            opacity: 0.5;
+        }
+
+        .form-control {
+            height: 350px;
+            opacity: 0.5;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="row justify-content-around">
+            <div class="col-md-6">
+                <div id="encrypt-block">
+                    <h3>Enter text: </h3>
+                    <textarea style="background-color: black;color:#fff;  font-weight: 500;" name="user-text"
+                        class="form-control" id="text-to-work"></textarea>
+                    <br><br>
+                    <div class="form-group">
+                        <button class="btn btn-outline-success" id="encrypt-btn">Encrypt</button>
+                        <button class="btn btn-outline-success" id="decrypt-btn">Decrypt</button>
+                        <button class="btn btn-outline-danger" id="btn-reset">Clear</button>
+                        <button class="btn btn-outline-info" id="btn-<"><</button>
+                                <button class="btn btn-outline-info" id="btn-x">X</button>
+                                <button class="btn btn-outline-info" id="btn->">></button>
+                    </div>
+                    <h4>Step:</h4>
+                    <select name="user_step" class="form-select form-select-sm" id="encrypt-step" size="1">
+                        <option>1</option>
+                        <option>2</option>
+                        <option selected>3</option>
+                        <option>4</option>
+                        <option>5</option>
+                        <option>6</option>
+                        <option>7</option>
+                        <option>8</option>
+                        <option>9</option>
+                        <option>10</option>
+                        <option>11</option>
+                        <option>12</option>
+                        <option>13</option>
+                        <option>14</option>
+                        <option>15</option>
+                        <option>16</option>
+                        <option>17</option>
+                        <option>18</option>
+                        <option>19</option>
+                        <option>20</option>
+                        <option>21</option>
+                        <option>22</option>
+                        <option>23</option>
+                        <option>24</option>
+                        <option>25</option>
+                        <option>26</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <h3>Result:</h3>
+                <textarea readonly style="background-color: black;color:#fff;  font-weight: 500;" class="form-control"
+                    id="output" cols="40" rows="3"></textarea>
+            </div>
+        </div>
+    </div>
+    <script>
+        window.addEventListener('DOMContentLoaded', function () {
+
+            var UserText = document.getElementById('text-to-work');
+            var UserSelectStap = document.getElementById('encrypt-step');
+            var UserStep = Number(UserSelectStap.value);
+            var result = document.getElementById('output');
+            var Encrypt = document.getElementById('encrypt-btn');
+            var Decrypt = document.getElementById('decrypt-btn');
+            var Reset = document.getElementById('btn-reset');
+            var X = document.getElementById('btn-x')
+            var back = document.getElementById('btn-<')
+            var forward = document.getElementById('btn->')
+            var TextToWork;
+            var pos;
+
+            var OtherSymbols = [' ', ',', '.', ':', ';', '!', '?', '-', '_', '=', '+', '(', ')', '[', ']', '@', '`', "'", '"', '<', '>', '|', '/', '%', '$', '^', '&', '*', '~'];
+            var Numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+            var EngAlfUp = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+            var EngAlfLower = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'm', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
+            var EngAlfUpEncrypt = Array(26);
+            var EngAlfLowerEncrypt = Array(26);
+            var NumbersEncrypt = Array(10);
+            var step = 1;
+
+            initEncrypt();
+
+
+            // Метод підбору
+
+            forward.addEventListener('click', () => {
+                if (step < 26){
+                    step += 1
+                    x();
+                }
+            })
+            back.addEventListener('click', () => {
+                if (step < 26){
+                    step -= 1
+                    x();
+                }
+            })
+
+            X.addEventListener('click', () => {
+               x();
+            })
+
+            function x(){
+                NumbersEncrypt = CezarEncrypt(step, Numbers);
+                EngAlfUpEncrypt = CezarEncrypt(step, EngAlfUp);
+                EngAlfLowerEncrypt = CezarEncrypt(step, EngAlfLower);
+                
+                TextToWork = UserText.value;
+                result.value = decrypt(TextToWork);
+            }
+            // 
+            UserSelectStap.addEventListener('change', function () {
+                UserStep = Number(this.value);
+                initEncrypt();
+            });
+
+            function initEncrypt() {
+                NumbersEncrypt = CezarEncrypt(UserStep, Numbers);
+                EngAlfUpEncrypt = CezarEncrypt(UserStep, EngAlfUp);
+                EngAlfLowerEncrypt = CezarEncrypt(UserStep, EngAlfLower);
+            }
+
+            function CezarEncrypt(stap, arr) {
+                var CopyAlf = arr.slice();
+                var i = 0;
+
+                while ((i + stap) < (CopyAlf.length)) {
+                    var buff = CopyAlf[i];
+                    CopyAlf[i] = CopyAlf[i + stap];
+                    CopyAlf[i + stap] = buff;
+                    i++;
+                }
+                return CopyAlf;
+            }
+
+            function contains(symb, arr) {
+                var letter = symb;
+                pos = 0;
+                for (var i = 0; i < arr.length; i++) {
+                    if (letter === arr[i]) {
+                        pos = i;
+                        return true;
+                        break;
+                    }
+                }
+            }
+
+            function encrypt(text) {
+                var result = '';
+                for (var i = 0; i <= text.length; i++) {
+                    var symbol = text[i];
+                    if (contains(symbol, OtherSymbols)) {
+                        result += symbol;
+                    }
+                    if (contains(symbol, Numbers)) {
+                        symbol = NumbersEncrypt[pos];
+                        result += symbol;
+                    }
+
+                    if (contains(symbol, EngAlfUp)) {
+                        symbol = EngAlfUpEncrypt[pos];
+                        result += symbol;
+                    }
+                    if ((contains(symbol, EngAlfLower))) {
+                        symbol = EngAlfLowerEncrypt[pos];
+                        result += symbol;
+                    }
+                }
+                return result;
+            }
+
+            function decrypt(text) {
+                var result = '';
+                for (var i = 0; i <= text.length; i++) {
+                    var symbol = text[i];
+                    if (contains(symbol, OtherSymbols)) {
+                        result += symbol;
+                    }
+                    if (contains(symbol, NumbersEncrypt)) {
+                        symbol = Numbers[pos];
+                        result += symbol;
+                    }
+                    if (contains(symbol, EngAlfUpEncrypt)) {
+                        symbol = EngAlfUp[pos];
+                        result += symbol;
+                    }
+                    if ((contains(symbol, EngAlfLowerEncrypt))) {
+                        symbol = EngAlfLower[pos];
+                        result += symbol;
+                    }
+                }
+                return result;
+            }
+
+            Encrypt.addEventListener('click', function () {
+                TextToWork = UserText.value;
+                result.value = encrypt(TextToWork);
+            });
+            Decrypt.addEventListener('click', function () {
+                TextToWork = UserText.value;
+                result.value = decrypt(TextToWork);
+            });
+            Reset.addEventListener('click', function () {
+                UserText.value = '';
+                result.value = '';
+                step = 1
+            });
+
+        });
+    </script>
+</body>
+
+</html>
